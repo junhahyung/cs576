@@ -57,11 +57,17 @@ Primary TA :
 - Add .item() to clamp functions in the NMS function.
 """
 
+from google.colab import drive
+drive.mount('/gdrive')
+
 # Specify the directory path where `assignemnt3.ipynb` and `dataset.zip` exist.
 # For example, if you saved `assignment3.ipynb` `/gdrive/My Drive/cs576/assignment3` directory,
 # then set root = '/gdrive/My Drive/cs576/assignment3'
-root = '~/junha/tt/t3'
+root = '/gdrive/My Drive/cs576/assignment3'
 
+!ln -s '/gdrive/My Drive'/{root.replace('/gdrive/My Drive/', '')}/weights ./
+!unzip -q '/gdrive/My Drive'/{root.replace('/gdrive/My Drive/', '')}/dataset.zip
+!unzip -q '/gdrive/My Drive'/{root.replace('/gdrive/My Drive/', '')}/test_images.zip
 
 import sys
 sys.path.append(root)
@@ -93,7 +99,7 @@ data_root = 'dataset'       # where the data exists.
 pretrained_backbone_path = 'weights/vgg_features.pth'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-lr = 0.0005          # learning rate
+lr = 0.001          # learning rate
 batch_size = 64     # batch_size
 last_epoch = 1      # the last training epoch. (defulat: 1)
 max_epoch = 200     # maximum epoch for the training.
@@ -106,12 +112,13 @@ lambda_noobj = 0.5  # weight for no-objectness confidence loss.
 
 ckpt_dir = os.path.join(root, ckpt_root)
 makedirs(ckpt_dir)
+!ln -s '/gdrive/My Drive'/{ckpt_dir.replace('/gdrive/My Drive/', '')} ./
 
 train_dset = VOCDetection(root=data_root, split='train')
-train_dloader = DataLoader(train_dset, batch_size=batch_size, shuffle=True, drop_last=True, num_workers=0)
+train_dloader = DataLoader(train_dset, batch_size=batch_size, shuffle=True, drop_last=True, num_workers=8)
 
 test_dset = VOCDetection(root=data_root, split='test')
-test_dloader = DataLoader(test_dset, batch_size=batch_size, shuffle=False, drop_last=False, num_workers=0)
+test_dloader = DataLoader(test_dset, batch_size=batch_size, shuffle=False, drop_last=False, num_workers=8)
 
 """# Problem 1. Implement Architecture (10pt) [(Illustration)](https://docs.google.com/drawings/d/1DNWgMK0XNQJ1IZPxX3u_ger7s-iQpAHG0pI_6A5dAPs/edit?usp=sharing)
 
@@ -688,3 +695,4 @@ In this section, you should summarize your results with your analysis on them. S
 
 Provide your discussion here..
 """
+
